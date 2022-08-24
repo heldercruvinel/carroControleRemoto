@@ -12,6 +12,15 @@ int IN2 = 12;
 int IN3 = 14;
 int IN4 = 27;
 
+int frontLed1 = 25;
+int frontLed2 = 33;
+int backLed1 = 26;
+int backLed2 = 32;
+int neonLed1 = 34;
+
+bool laternsLedsOn = false;
+bool neonLedsOn = false;
+
 // Configurações PWM
 const int frequency = 30000;
 const int pwmChannel1 = 0;
@@ -33,6 +42,12 @@ void setup() {
   pinMode(IN3, OUTPUT);
   pinMode(IN4, OUTPUT);
 
+  pinMode(frontLed1, OUTPUT);
+  pinMode(frontLed2, OUTPUT); 
+  pinMode(backLed1, OUTPUT);
+  pinMode(backLed2, OUTPUT);
+  pinMode(neonLed1, OUTPUT); 
+
   ledcSetup(pwmChannel1, frequency, resolution);
   ledcSetup(pwmChannel2, frequency, resolution);
   ledcSetup(pwmChannel3, frequency, resolution);
@@ -43,10 +58,12 @@ void setup() {
   ledcAttachPin(IN3, pwmChannel3);
   ledcAttachPin(IN4, pwmChannel4);
 
-//  digitalWrite(IN1, LOW);
-//  digitalWrite(IN2, LOW);
-//  digitalWrite(IN3, LOW);
-//  digitalWrite(IN4, LOW);
+  digitalWrite(frontLed1, LOW);
+  digitalWrite(frontLed2, LOW);
+  digitalWrite(backLed1, LOW);
+  digitalWrite(backLed2, LOW);
+  digitalWrite(neonLed1, LOW);
+
 }
 
 void loop() {
@@ -57,6 +74,48 @@ void loop() {
   if(SerialBT.available()) {
     char recebido = SerialBT.read();
     Serial.write(recebido);
+
+    if(laternsLedsOn){
+      digitalWrite(frontLed1, HIGH);
+      digitalWrite(frontLed2, HIGH);
+      digitalWrite(backLed1, HIGH);
+      digitalWrite(backLed2, HIGH);
+    }
+
+    if(!laternsLedsOn){
+      digitalWrite(frontLed1, LOW);
+      digitalWrite(frontLed2, LOW);
+      digitalWrite(backLed1, LOW);
+      digitalWrite(backLed2, LOW);
+    }
+
+    if(neonLedsOn){
+      digitalWrite(neonLed1, HIGH);
+    }    
+
+    if(!neonLedsOn){
+      digitalWrite(neonLed1, LOW);
+    }
+
+    // Liga as luzes dianteiras
+    if(recebido == 'W'){
+      laternsLedsOn = true;
+    }
+
+    // Desliga as luzes dianteiras
+    if(recebido == 'w'){
+      laternsLedsOn = false;
+    }
+
+    // Liga as luzes traseiras
+    if(recebido == 'U'){
+      neonLedsOn = true;
+    }
+
+    // Desliga as luzes traseiras
+    if(recebido == 'u'){
+      neonLedsOn = false;
+    }
 
     // Parado
     if(recebido == 'S'){
