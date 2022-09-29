@@ -1,2 +1,2 @@
 # carroControleRemoto
-Projeto de desenvolvimento de carro de controle remoto com ESP32
+Projeto carro de controle remoto com ESP32
